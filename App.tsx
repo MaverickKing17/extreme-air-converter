@@ -191,28 +191,10 @@ const TrustIndicator = ({ icon: Icon, label, sub }: any) => (
 const App: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedProperty, setSelectedProperty] = useState('Residential');
-  const [liveLogIndex, setLiveLogIndex] = useState(0);
-
-  const monitoringLogs = [
-    "Analyzing GTA thermal patterns",
-    "Optimizing compressor efficiency",
-    "HEPA filter status: Nominal",
-    "Sensor sync: GTA Active",
-    "Smart-dispatch: Online",
-    "Humidity calibration complete",
-    "Energy consumption: Low-draw",
-    "Cloud backup: Secure"
-  ];
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
-    const logTimer = setInterval(() => {
-      setLiveLogIndex(prev => (prev + 1) % monitoringLogs.length);
-    }, 3000);
-    return () => {
-      clearInterval(timer);
-      clearInterval(logTimer);
-    };
+    return () => clearInterval(timer);
   }, []);
 
   const vibe: VibeContext = useMemo(() => {
@@ -236,7 +218,6 @@ const App: React.FC = () => {
       season: isHeatingSeason ? 'heating' : 'cooling',
       time: timeVibe,
       alert: currentAlert,
-      // Replacing with user-provided high-fidelity dashboard image
       heroImage: "https://i.ibb.co/R49x6d6d/hunyuan-image-3-0-b-Replace-the-current-1.png",
       themeColor: isHeatingSeason ? 'text-blue-600' : 'text-cyan-600',
       accentGradient: isHeatingSeason 
@@ -312,47 +293,6 @@ const App: React.FC = () => {
           <div className="relative animate-in zoom-in duration-1000 group/hero">
              <div className="relative z-10 bg-gradient-to-br from-slate-200 to-slate-100 rounded-[3.5rem] aspect-square overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border-8 border-white group-hover/hero:shadow-[0_50px_100px_-20px_rgba(0,86,179,0.1)] transition-all duration-700">
                 <img src={vibe.heroImage} className="w-full h-full object-cover transition-all duration-1000 scale-100 group-hover/hero:scale-105" alt="Extreme Air HVAC Control Center" />
-                
-                {/* Simplified & Ultra-Legible Dashboard Status Bar */}
-                <div className="absolute bottom-8 left-8 right-8 bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-5 border border-slate-50 transition-all duration-500 group-hover/hero:-translate-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-5">
-                      <div className={`w-14 h-14 ${vibe.season === 'heating' ? 'bg-orange-500' : 'bg-blue-600'} rounded-2xl flex items-center justify-center text-white shadow-xl`}>
-                        {vibe.season === 'heating' ? <Flame className="w-7 h-7" /> : <Wind className="w-7 h-7" />}
-                      </div>
-                      
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-2 mb-0.5">
-                           <span className="text-lg font-black text-slate-900">System: Active</span>
-                           <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
-                        </div>
-                        {/* Smooth Ticker with High Contrast */}
-                        <div className="h-5 overflow-hidden">
-                           <div className="transition-all duration-1000 ease-in-out" style={{ transform: `translateY(-${liveLogIndex * 20}px)` }}>
-                              {monitoringLogs.map((log, i) => (
-                                <div key={i} className="h-5 text-xs font-bold text-blue-600 uppercase tracking-widest flex items-center gap-2">
-                                   <div className="w-1 h-1 bg-blue-200 rounded-full"></div>
-                                   {log}
-                                </div>
-                              ))}
-                           </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="hidden sm:flex items-center gap-8 border-l border-slate-100 pl-8">
-                       <div className="flex items-center gap-1.5 h-6">
-                          {[3, 5, 8, 4, 7, 5].map((h, i) => (
-                            <div key={i} className="w-1 bg-slate-200 rounded-full" style={{ height: `${h * 10}%` }}></div>
-                          ))}
-                       </div>
-                       <div className="flex flex-col items-end">
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Coverage</span>
-                          <span className="text-xs font-black text-slate-900 leading-none">GTA Hub 01</span>
-                       </div>
-                    </div>
-                  </div>
-                </div>
              </div>
 
              {/* Background Atmosphere Blurs */}
