@@ -41,7 +41,8 @@ import {
   DollarSign,
   GanttChart,
   Navigation,
-  LocateFixed
+  LocateFixed,
+  Radar
 } from 'lucide-react';
 
 // Define the custom element for ElevenLabs to avoid TS errors
@@ -102,6 +103,15 @@ const SectionHeader = ({ badge, title, description, light = false }: any) => (
 
 const GTAInteractiveMap = () => {
   const [selectedRegion, setSelectedRegion] = useState<RegionID | null>('north-york');
+  const [isScanning, setIsScanning] = useState(false);
+
+  useEffect(() => {
+    if (selectedRegion) {
+      setIsScanning(true);
+      const timer = setTimeout(() => setIsScanning(false), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedRegion]);
   
   const regions: Record<RegionID, RegionData> = {
     'north-york': { id: 'north-york', name: 'North York', techs: 12, response: '15-30 min', focus: 'Residential High-Rise' },
@@ -113,59 +123,79 @@ const GTAInteractiveMap = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-      <div className="lg:col-span-7 bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xl relative group">
-        <div className="absolute top-8 left-8 z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600 text-white rounded-full text-[10px] font-bold uppercase tracking-widest">
+      <div className="lg:col-span-7 bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xl relative group overflow-hidden">
+        <div className="absolute top-8 left-8 z-10 flex flex-col gap-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600 text-white rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-blue-600/20">
             <LocateFixed className="w-3 h-3" /> Live Coverage Map
           </div>
+          {isScanning && (
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900 text-white rounded-full text-[8px] font-black uppercase tracking-widest animate-pulse">
+              <Radar className="w-3 h-3 text-blue-400" /> Scanning Distict...
+            </div>
+          )}
         </div>
         
         {/* Stylized SVG Map of GTA Districts */}
         <svg viewBox="0 0 500 400" className="w-full h-auto drop-shadow-2xl">
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          
           {/* Vaughan */}
           <path 
             d="M 50,50 L 250,50 L 250,150 L 50,150 Z" 
-            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'vaughan' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'vaughan' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            filter={selectedRegion === 'vaughan' ? "url(#glow)" : ""}
             onClick={() => setSelectedRegion('vaughan')}
           />
-          <text x="110" y="105" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'vaughan' ? 'fill-white' : 'fill-slate-400'}`}>VAUGHAN</text>
+          <text x="110" y="105" className={`text-[12px] font-black pointer-events-none transition-colors duration-500 ${selectedRegion === 'vaughan' ? 'fill-white' : 'fill-slate-400'}`}>VAUGHAN</text>
 
           {/* Etobicoke */}
           <path 
             d="M 50,150 L 180,150 L 180,350 L 100,350 L 50,250 Z" 
-            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'etobicoke' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'etobicoke' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            filter={selectedRegion === 'etobicoke' ? "url(#glow)" : ""}
             onClick={() => setSelectedRegion('etobicoke')}
           />
-          <text x="75" y="240" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'etobicoke' ? 'fill-white' : 'fill-slate-400'}`}>ETOBICOKE</text>
+          <text x="75" y="240" className={`text-[12px] font-black pointer-events-none transition-colors duration-500 ${selectedRegion === 'etobicoke' ? 'fill-white' : 'fill-slate-400'}`}>ETOBICOKE</text>
 
           {/* North York */}
           <path 
             d="M 250,50 L 450,50 L 450,150 L 320,250 L 180,150 L 250,150 Z" 
-            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'north-york' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'north-york' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            filter={selectedRegion === 'north-york' ? "url(#glow)" : ""}
             onClick={() => setSelectedRegion('north-york')}
           />
-          <text x="270" y="105" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'north-york' ? 'fill-white' : 'fill-slate-400'}`}>NORTH YORK</text>
+          <text x="270" y="105" className={`text-[12px] font-black pointer-events-none transition-colors duration-500 ${selectedRegion === 'north-york' ? 'fill-white' : 'fill-slate-400'}`}>NORTH YORK</text>
 
           {/* Scarborough */}
           <path 
             d="M 450,50 L 490,50 L 490,300 L 320,350 L 320,250 L 450,150 Z" 
-            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'scarborough' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'scarborough' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            filter={selectedRegion === 'scarborough' ? "url(#glow)" : ""}
             onClick={() => setSelectedRegion('scarborough')}
           />
-          <text x="365" y="180" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'scarborough' ? 'fill-white' : 'fill-slate-400'}`}>SCARBOROUGH</text>
+          <text x="365" y="180" className={`text-[12px] font-black pointer-events-none transition-colors duration-500 ${selectedRegion === 'scarborough' ? 'fill-white' : 'fill-slate-400'}`}>SCARBOROUGH</text>
 
           {/* Downtown / Old Toronto */}
           <path 
             d="M 180,150 L 320,250 L 320,350 L 180,350 Z" 
-            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'downtown' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'downtown' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            filter={selectedRegion === 'downtown' ? "url(#glow)" : ""}
             onClick={() => setSelectedRegion('downtown')}
           />
-          <text x="205" y="270" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'downtown' ? 'fill-white' : 'fill-slate-400'}`}>DOWNTOWN</text>
+          <text x="205" y="270" className={`text-[12px] font-black pointer-events-none transition-colors duration-500 ${selectedRegion === 'downtown' ? 'fill-white' : 'fill-slate-400'}`}>DOWNTOWN</text>
         </svg>
 
         <div className="absolute bottom-8 left-8 right-8 flex justify-between items-center px-6 py-4 bg-slate-900 rounded-2xl text-white shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">
           <span className="text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-            <Navigation className="w-3 h-3 text-blue-400" /> Hover district for details
+            <Navigation className="w-3 h-3 text-blue-400" /> Click district for dispatch data
           </span>
           <span className="text-[10px] font-bold text-slate-400">Extreme Air Ops © 2026</span>
         </div>
@@ -738,8 +768,11 @@ const App: React.FC = () => {
                     <div className="flex items-center gap-3 mb-1">
                       <h4 className="font-bold text-lg text-slate-900 group-hover:text-blue-600 transition-colors">{item.title}</h4>
                       {item.title === "Response Intelligence" && (
-                        <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider transition-all duration-500 ${dispatchStatus === 'live' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-400 border border-slate-200'}`}>
-                           <span className={`w-1.5 h-1.5 rounded-full ${dispatchStatus === 'live' ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-400'}`}></span>
+                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider transition-all duration-700 ${dispatchStatus === 'live' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-[0_0_20px_rgba(16,185,129,0.15)] scale-100' : 'bg-slate-100 text-slate-400 border border-slate-200 scale-95 opacity-50 grayscale'}`}>
+                           <div className="relative flex items-center justify-center w-2 h-2">
+                             {dispatchStatus === 'live' && <span className="absolute w-full h-full rounded-full bg-emerald-400 animate-ping opacity-75"></span>}
+                             <span className={`relative w-2 h-2 rounded-full ${dispatchStatus === 'live' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-slate-300'}`}></span>
+                           </div>
                            {dispatchStatus === 'live' ? 'Live Dispatching' : 'System Idle'}
                         </div>
                       )}
