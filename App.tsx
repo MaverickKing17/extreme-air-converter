@@ -514,19 +514,22 @@ const App: React.FC = () => {
           <div className="bg-white border border-slate-200 p-8 lg:p-16 rounded-[4rem] shadow-2xl text-left relative overflow-hidden group/form transition-all duration-700 hover:shadow-blue-500/5">
              <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/[0.03] blur-[100px] pointer-events-none transition-all group-hover/form:bg-blue-600/[0.07]"></div>
              
-             <form className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-10" onSubmit={(e) => { e.preventDefault(); alert("AI Quote Generating... Please check your email in 30 seconds!"); }}>
+             {/* Form Connected to Formspree */}
+             <form action="https://formspree.io/f/mreepwpd" method="POST" className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-10">
+               <input type="hidden" name="propertyType" value={selectedProperty} />
+               
                <div className="space-y-3">
                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 flex items-center gap-2">
                    <User className="w-3 h-3" /> Full Name
                  </label>
-                 <input required type="text" placeholder="John Doe" className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold text-slate-900 placeholder:text-slate-300 shadow-sm" />
+                 <input required name="name" type="text" placeholder="John Doe" className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold text-slate-900 placeholder:text-slate-300 shadow-sm" />
                </div>
 
                <div className="space-y-3">
                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 flex items-center gap-2">
                    <Phone className="w-3 h-3" /> Phone Number
                  </label>
-                 <input required type="tel" placeholder="(416) 000-0000" className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold text-slate-900 placeholder:text-slate-300 shadow-sm" />
+                 <input required name="phone" type="tel" placeholder="(416) 000-0000" className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold text-slate-900 placeholder:text-slate-300 shadow-sm" />
                </div>
 
                <div className="space-y-5 md:col-span-2">
@@ -561,7 +564,7 @@ const App: React.FC = () => {
                    <Wrench className="w-3 h-3" /> Primary Need
                  </label>
                  <div className="relative group/select">
-                    <select className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold appearance-none text-slate-900 shadow-sm cursor-pointer">
+                    <select name="need" className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold appearance-none text-slate-900 shadow-sm cursor-pointer">
                         <option>Select Option</option>
                         <option>Emergency Furnace Repair</option>
                         <option>AC Installation & Optimization</option>
@@ -576,7 +579,7 @@ const App: React.FC = () => {
                </div>
 
                <div className="md:col-span-2 pt-6">
-                 <button className="w-full group/btn relative py-6 bg-slate-900 text-white rounded-3xl font-black text-xl hover:bg-blue-600 hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 shadow-2xl shadow-slate-900/30 overflow-hidden">
+                 <button type="submit" className="w-full group/btn relative py-6 bg-slate-900 text-white rounded-3xl font-black text-xl hover:bg-blue-600 hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 shadow-2xl shadow-slate-900/30 overflow-hidden">
                     <span className="flex items-center justify-center gap-3 relative z-10">
                       Analyze My Request <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-2 transition-transform" />
                     </span>
