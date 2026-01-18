@@ -39,7 +39,9 @@ import {
   Info,
   Clock,
   DollarSign,
-  GanttChart
+  GanttChart,
+  Navigation,
+  LocateFixed
 } from 'lucide-react';
 
 // Define the custom element for ElevenLabs to avoid TS errors
@@ -60,6 +62,16 @@ type PageID =
   | 'privacy' | 'terms' | 'tssa' | 'accessibility' 
   | 'rebates' | 'warranty' | 'tracking' | 'financing' 
   | 'emergency-protocol' | 'portal' | null;
+
+type RegionID = 'north-york' | 'etobicoke' | 'scarborough' | 'vaughan' | 'downtown';
+
+interface RegionData {
+  id: RegionID;
+  name: string;
+  techs: number;
+  response: string;
+  focus: string;
+}
 
 // --- Shared Utilities ---
 
@@ -87,6 +99,118 @@ const SectionHeader = ({ badge, title, description, light = false }: any) => (
     </p>
   </div>
 );
+
+const GTAInteractiveMap = () => {
+  const [selectedRegion, setSelectedRegion] = useState<RegionID | null>('north-york');
+  
+  const regions: Record<RegionID, RegionData> = {
+    'north-york': { id: 'north-york', name: 'North York', techs: 12, response: '15-30 min', focus: 'Residential High-Rise' },
+    'etobicoke': { id: 'etobicoke', name: 'Etobicoke', techs: 8, response: '25-45 min', focus: 'Single Family Detached' },
+    'scarborough': { id: 'scarborough', name: 'Scarborough', techs: 10, response: '20-40 min', focus: 'Industrial/HVAC' },
+    'vaughan': { id: 'vaughan', name: 'Vaughan', techs: 6, response: '30-60 min', focus: 'Luxury Smart Homes' },
+    'downtown': { id: 'downtown', name: 'Downtown Toronto', techs: 14, response: '10-25 min', focus: 'Hydronic & Steam' }
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="lg:col-span-7 bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xl relative group">
+        <div className="absolute top-8 left-8 z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600 text-white rounded-full text-[10px] font-bold uppercase tracking-widest">
+            <LocateFixed className="w-3 h-3" /> Live Coverage Map
+          </div>
+        </div>
+        
+        {/* Stylized SVG Map of GTA Districts */}
+        <svg viewBox="0 0 500 400" className="w-full h-auto drop-shadow-2xl">
+          {/* Vaughan */}
+          <path 
+            d="M 50,50 L 250,50 L 250,150 L 50,150 Z" 
+            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'vaughan' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            onClick={() => setSelectedRegion('vaughan')}
+          />
+          <text x="110" y="105" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'vaughan' ? 'fill-white' : 'fill-slate-400'}`}>VAUGHAN</text>
+
+          {/* Etobicoke */}
+          <path 
+            d="M 50,150 L 180,150 L 180,350 L 100,350 L 50,250 Z" 
+            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'etobicoke' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            onClick={() => setSelectedRegion('etobicoke')}
+          />
+          <text x="75" y="240" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'etobicoke' ? 'fill-white' : 'fill-slate-400'}`}>ETOBICOKE</text>
+
+          {/* North York */}
+          <path 
+            d="M 250,50 L 450,50 L 450,150 L 320,250 L 180,150 L 250,150 Z" 
+            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'north-york' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            onClick={() => setSelectedRegion('north-york')}
+          />
+          <text x="270" y="105" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'north-york' ? 'fill-white' : 'fill-slate-400'}`}>NORTH YORK</text>
+
+          {/* Scarborough */}
+          <path 
+            d="M 450,50 L 490,50 L 490,300 L 320,350 L 320,250 L 450,150 Z" 
+            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'scarborough' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            onClick={() => setSelectedRegion('scarborough')}
+          />
+          <text x="365" y="180" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'scarborough' ? 'fill-white' : 'fill-slate-400'}`}>SCARBOROUGH</text>
+
+          {/* Downtown / Old Toronto */}
+          <path 
+            d="M 180,150 L 320,250 L 320,350 L 180,350 Z" 
+            className={`cursor-pointer transition-all duration-300 ${selectedRegion === 'downtown' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
+            onClick={() => setSelectedRegion('downtown')}
+          />
+          <text x="205" y="270" className={`text-[12px] font-black pointer-events-none ${selectedRegion === 'downtown' ? 'fill-white' : 'fill-slate-400'}`}>DOWNTOWN</text>
+        </svg>
+
+        <div className="absolute bottom-8 left-8 right-8 flex justify-between items-center px-6 py-4 bg-slate-900 rounded-2xl text-white shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+            <Navigation className="w-3 h-3 text-blue-400" /> Hover district for details
+          </span>
+          <span className="text-[10px] font-bold text-slate-400">Extreme Air Ops © 2026</span>
+        </div>
+      </div>
+
+      <div className="lg:col-span-5 space-y-6">
+        {selectedRegion ? (
+          <div className="bg-slate-900 p-10 rounded-[3rem] text-white animate-in fade-in slide-in-from-right duration-500 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl"></div>
+            <h4 className="text-3xl font-black mb-2 tracking-tighter">{regions[selectedRegion].name}</h4>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-lg text-[10px] font-black uppercase tracking-widest mb-8">
+              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Service Active
+            </div>
+            
+            <div className="space-y-6">
+              <div className="flex justify-between items-center py-4 border-b border-white/10">
+                <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Active Master Techs</span>
+                <span className="text-xl font-black text-white">{regions[selectedRegion].techs}</span>
+              </div>
+              <div className="flex justify-between items-center py-4 border-b border-white/10">
+                <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Est. Response Time</span>
+                <span className="text-xl font-black text-blue-400">{regions[selectedRegion].response}</span>
+              </div>
+              <div className="flex justify-between items-center py-4">
+                <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">District Specialization</span>
+                <span className="text-sm font-black text-white text-right max-w-[150px]">{regions[selectedRegion].focus}</span>
+              </div>
+            </div>
+
+            <button onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })} className="w-full mt-10 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black transition-all flex items-center justify-center gap-3 active:scale-95 group">
+              Book {regions[selectedRegion].name} Specialist
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        ) : (
+          <div className="p-10 border-4 border-dashed border-slate-200 rounded-[3rem] text-center flex flex-col items-center justify-center min-h-[400px]">
+            <LocateFixed className="w-12 h-12 text-slate-300 mb-4" />
+            <h4 className="text-xl font-black text-slate-400 mb-2 tracking-tighter">Select a District</h4>
+            <p className="text-slate-400 text-sm max-w-xs">Click on the map to see real-time technician availability and response times for your area.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const ServiceCard = ({ icon: Icon, title, description, badge }: any) => (
   <div className="bento-card bg-slate-50 p-8 rounded-[2rem] border border-slate-100 flex flex-col justify-between h-full group hover:bg-white hover:border-blue-200 cursor-default transition-all duration-300">
@@ -639,6 +763,18 @@ const App: React.FC = () => {
           <a href="tel:4167282224" className="inline-flex items-center gap-4 px-10 py-6 bg-red-600 rounded-2xl font-black text-2xl shadow-xl hover:bg-red-700 hover:scale-105 transition-all mt-8">
             <Phone className="w-8 h-8" /> (416) 728-2224
           </a>
+        </div>
+      </section>
+
+      {/* Service Area Domain Section */}
+      <section id="service-area" className="py-24 lg:py-32 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <SectionHeader 
+            badge="Coverage"
+            title="Our Service Domain."
+            description="Extreme Air operates a fleet of master technicians strategically stationed across the Greater Toronto Area to ensure industry-leading response times."
+          />
+          <GTAInteractiveMap />
         </div>
       </section>
 
