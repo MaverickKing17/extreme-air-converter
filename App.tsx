@@ -805,7 +805,9 @@ const App: React.FC = () => {
 
       {/* ElevenLabs AI Receptionist Widget Integration */}
       <div className="fixed bottom-6 right-6 z-50">
-        <ElevenLabsConvai agent-id="agent_5801kf7b11q4ec7vrnpht15b9gqf"></ElevenLabsConvai>
+        <ElevenLabsConvai 
+          agent-id="agent_5801kf7b11q4ec7vrnpht15b9gqf"
+        ></ElevenLabsConvai>
       </div>
     </div>
   );
