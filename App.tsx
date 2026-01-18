@@ -194,21 +194,21 @@ const App: React.FC = () => {
   const [liveLogIndex, setLiveLogIndex] = useState(0);
 
   const monitoringLogs = [
-    "Analyzing GTA thermal patterns...",
-    "Optimizing compressor efficiency...",
-    "HEPA filter status: 98% nominal",
-    "Sensor sync: M5V 1J2 active",
-    "Smart-dispatch: Hub North connected",
+    "Analyzing GTA thermal patterns",
+    "Optimizing compressor efficiency",
+    "HEPA filter status: Nominal",
+    "Sensor sync: GTA Active",
+    "Smart-dispatch: Online",
     "Humidity calibration complete",
-    "Energy consumption: Low-draw state",
-    "System backup: Cloud sync active"
+    "Energy consumption: Low-draw",
+    "Cloud backup: Secure"
   ];
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     const logTimer = setInterval(() => {
       setLiveLogIndex(prev => (prev + 1) % monitoringLogs.length);
-    }, 2500);
+    }, 3000);
     return () => {
       clearInterval(timer);
       clearInterval(logTimer);
@@ -236,9 +236,8 @@ const App: React.FC = () => {
       season: isHeatingSeason ? 'heating' : 'cooling',
       time: timeVibe,
       alert: currentAlert,
-      heroImage: isHeatingSeason 
-        ? "https://images.unsplash.com/photo-1615873966507-7bc281898708?auto=format&fit=crop&q=80&w=1200" 
-        : "https://images.unsplash.com/photo-1581094288338-2314dddb7e8c?auto=format&fit=crop&q=80&w=1200",
+      // Replacing with user-provided high-fidelity dashboard image
+      heroImage: "https://i.ibb.co/R49x6d6d/hunyuan-image-3-0-b-Replace-the-current-1.png",
       themeColor: isHeatingSeason ? 'text-blue-600' : 'text-cyan-600',
       accentGradient: isHeatingSeason 
         ? 'radial-gradient(circle at top right, rgba(0, 86, 179, 0.1), transparent)'
@@ -309,65 +308,30 @@ const App: React.FC = () => {
             </div>
           </div>
           
-          {/* Enhanced Hero Visual - Professional Control Center Enhancement */}
+          {/* Enhanced Hero Visual - Professional Dashboard Integration */}
           <div className="relative animate-in zoom-in duration-1000 group/hero">
              <div className="relative z-10 bg-gradient-to-br from-slate-200 to-slate-100 rounded-[3.5rem] aspect-square overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border-8 border-white group-hover/hero:shadow-[0_50px_100px_-20px_rgba(0,86,179,0.1)] transition-all duration-700">
-                <img src={vibe.heroImage} className="w-full h-full object-cover grayscale opacity-80 group-hover/hero:grayscale-0 group-hover/hero:opacity-100 transition-all duration-1000 scale-110 group-hover/hero:scale-105" alt="HVAC Visual" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/60 via-transparent to-transparent"></div>
-
-                {/* Live Telemetry Overlays */}
-                <div className="absolute top-8 left-8 right-8 flex justify-between items-start pointer-events-none">
-                   <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 flex items-center gap-3 animate-in slide-in-from-top duration-700 delay-500 shadow-2xl">
-                      <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                      <span className="text-[10px] font-black text-white uppercase tracking-widest">Master Cloud Sync</span>
-                   </div>
-                   <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 flex items-center gap-3 animate-in slide-in-from-top duration-700 delay-700 shadow-2xl">
-                      <Cpu className="w-4 h-4 text-blue-400" />
-                      <span className="text-[10px] font-black text-white uppercase tracking-widest">AI Hub v4.8</span>
-                   </div>
-                </div>
-
-                {/* Control Center Sidebar Readouts */}
-                <div className="absolute top-1/2 left-8 -translate-y-1/2 flex flex-col gap-5 animate-in slide-in-from-left duration-1000 delay-500">
-                   {[
-                     { icon: Gauge, label: "Pressure", val: "14.7 psi", sub: "Nominal", color: "text-blue-400" },
-                     { icon: Activity, label: "Efficiency", val: "99.4%", sub: "Peak Load", color: "text-emerald-400" },
-                     { icon: Wind, label: "IAQ Index", val: "98/100", sub: "HEPA Active", color: "text-cyan-400" }
-                   ].map((sensor, idx) => (
-                     <div key={idx} className="bg-slate-950/40 backdrop-blur-xl border border-white/10 rounded-[1.5rem] p-4 flex items-center gap-5 hover:bg-slate-950/60 transition-all cursor-default group/sensor hover:scale-105">
-                        <div className={`p-3 bg-white/5 rounded-2xl ${sensor.color} group-hover/sensor:scale-110 transition-transform shadow-inner`}>
-                           <sensor.icon className="w-5 h-5" />
-                        </div>
-                        <div className="hidden sm:block">
-                           <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">{sensor.label}</div>
-                           <div className="text-sm font-black text-white leading-none mb-1">{sensor.val}</div>
-                           <div className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">{sensor.sub}</div>
-                        </div>
-                     </div>
-                   ))}
-                </div>
-
-                {/* Professional Status Bar Enhancement - Demo Ready */}
-                <div className="absolute bottom-10 left-10 right-10 p-1.5 bg-white/95 backdrop-blur-3xl rounded-[3rem] border border-white shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] transition-all duration-700 group-hover/hero:-translate-y-4 group-hover/hero:shadow-blue-500/10">
-                  <div className="flex items-center justify-between px-8 py-6">
-                    <div className="flex items-center gap-7">
-                      <div className={`relative w-16 h-16 ${vibe.season === 'heating' ? 'bg-orange-500 shadow-orange-500/30' : 'bg-cyan-500 shadow-cyan-500/30'} rounded-[1.75rem] flex items-center justify-center text-white shadow-2xl transition-all duration-700 group-hover/hero:rotate-[-8deg] group-hover/hero:scale-110`}>
-                        {vibe.season === 'heating' ? <Flame className="w-8 h-8" /> : <Wind className="w-8 h-8" />}
-                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center">
-                           <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-ping"></div>
-                        </div>
+                <img src={vibe.heroImage} className="w-full h-full object-cover transition-all duration-1000 scale-100 group-hover/hero:scale-105" alt="Extreme Air HVAC Control Center" />
+                
+                {/* Simplified & Ultra-Legible Dashboard Status Bar */}
+                <div className="absolute bottom-8 left-8 right-8 bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-5 border border-slate-50 transition-all duration-500 group-hover/hero:-translate-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-5">
+                      <div className={`w-14 h-14 ${vibe.season === 'heating' ? 'bg-orange-500' : 'bg-blue-600'} rounded-2xl flex items-center justify-center text-white shadow-xl`}>
+                        {vibe.season === 'heating' ? <Flame className="w-7 h-7" /> : <Wind className="w-7 h-7" />}
                       </div>
                       
-                      <div className="flex flex-col justify-center">
-                        <div className="flex items-center gap-3 mb-1.5">
-                           <span className="text-base font-black text-slate-900 tracking-tight">Current Status: GTA Active</span>
-                           <Signal className="w-3.5 h-3.5 text-blue-500 animate-pulse" />
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2 mb-0.5">
+                           <span className="text-lg font-black text-slate-900">System: Active</span>
+                           <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
                         </div>
-                        <div className="relative text-xs text-slate-500 font-bold uppercase tracking-[0.15em] overflow-hidden h-4">
-                           <div className="transition-all duration-1000 cubic-bezier(0.65, 0, 0.35, 1)" style={{ transform: `translateY(-${liveLogIndex * 16}px)` }}>
+                        {/* Smooth Ticker with High Contrast */}
+                        <div className="h-5 overflow-hidden">
+                           <div className="transition-all duration-1000 ease-in-out" style={{ transform: `translateY(-${liveLogIndex * 20}px)` }}>
                               {monitoringLogs.map((log, i) => (
-                                <div key={i} className="h-4 flex items-center gap-2">
-                                   <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
+                                <div key={i} className="h-5 text-xs font-bold text-blue-600 uppercase tracking-widest flex items-center gap-2">
+                                   <div className="w-1 h-1 bg-blue-200 rounded-full"></div>
                                    {log}
                                 </div>
                               ))}
@@ -376,25 +340,24 @@ const App: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="hidden lg:flex items-center gap-10">
-                       {/* Pulse Animation Waveform */}
-                       <div className="flex items-center gap-1 h-8 opacity-40 group-hover/hero:opacity-100 transition-opacity">
-                          {[3, 5, 8, 4, 9, 6, 2, 7, 5, 3].map((h, i) => (
-                            <div key={i} className="w-1 bg-blue-500 rounded-full animate-[pulse_1.5s_infinite]" style={{ height: `${h * 10}%`, animationDelay: `${i * 0.1}s` }}></div>
+                    <div className="hidden sm:flex items-center gap-8 border-l border-slate-100 pl-8">
+                       <div className="flex items-center gap-1.5 h-6">
+                          {[3, 5, 8, 4, 7, 5].map((h, i) => (
+                            <div key={i} className="w-1 bg-slate-200 rounded-full" style={{ height: `${h * 10}%` }}></div>
                           ))}
                        </div>
-                       <div className="flex flex-col items-end border-l border-slate-100 pl-10">
-                          <BarChart3 className="w-6 h-6 text-slate-800 mb-1 group-hover/hero:scale-110 transition-transform" />
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Data Stream</span>
+                       <div className="flex flex-col items-end">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Coverage</span>
+                          <span className="text-xs font-black text-slate-900 leading-none">GTA Hub 01</span>
                        </div>
                     </div>
                   </div>
                 </div>
              </div>
 
-             {/* Background Atmosphere */}
-             <div className={`absolute -top-12 -right-12 w-80 h-80 ${vibe.season === 'heating' ? 'bg-orange-500/30' : 'bg-cyan-500/30'} rounded-full blur-[120px] animate-pulse pointer-events-none opacity-50`}></div>
-             <div className="absolute -bottom-12 -left-12 w-80 h-80 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none opacity-50"></div>
+             {/* Background Atmosphere Blurs */}
+             <div className={`absolute -top-16 -right-16 w-80 h-80 ${vibe.season === 'heating' ? 'bg-orange-500/20' : 'bg-blue-600/20'} rounded-full blur-[120px] animate-pulse pointer-events-none`}></div>
+             <div className="absolute -bottom-16 -left-16 w-80 h-80 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
           </div>
         </div>
       </section>
@@ -592,17 +555,16 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* Quote Form Section - Refined for Demo */}
+      {/* Quote Form Section */}
       <section id="contact" className="py-24 lg:py-40 bg-slate-50 relative overflow-hidden">
-        {/* Visual accents for background */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-400/10 rounded-full blur-[120px]"></div>
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-yellow-400/10 rounded-full blur-[120px]"></div>
         
         <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
-          <div className="inline-flex p-4 bg-white rounded-2xl mb-8 shadow-xl border border-slate-100 animate-in fade-in slide-in-from-bottom duration-700">
+          <div className="inline-flex p-4 bg-white rounded-2xl mb-8 shadow-xl border border-slate-100">
             <MessageCircle className="w-8 h-8 text-blue-600" />
           </div>
-          <h2 className="text-4xl lg:text-7xl font-black tracking-tighter mb-8 leading-tight text-slate-900 animate-in fade-in slide-in-from-bottom duration-1000">
+          <h2 className="text-4xl lg:text-7xl font-black tracking-tighter mb-8 leading-tight text-slate-900">
             Get Your <span className="text-blue-600">Smart Estimate.</span>
           </h2>
           <p className="text-lg lg:text-xl text-slate-500 mb-16 font-medium max-w-2xl mx-auto leading-relaxed">
@@ -613,29 +575,20 @@ const App: React.FC = () => {
              <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/[0.03] blur-[100px] pointer-events-none transition-all group-hover/form:bg-blue-600/[0.07]"></div>
              
              <form className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-10" onSubmit={(e) => { e.preventDefault(); alert("AI Quote Generating... Please check your email in 30 seconds!"); }}>
-               {/* Inputs */}
                <div className="space-y-3">
                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 flex items-center gap-2">
                    <User className="w-3 h-3" /> Full Name
                  </label>
-                 <div className="relative group/input">
-                    <input required type="text" placeholder="John Doe" className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold text-slate-900 placeholder:text-slate-300 shadow-sm" />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-6 opacity-0 group-focus-within/input:opacity-100 transition-opacity">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                    </div>
-                 </div>
+                 <input required type="text" placeholder="John Doe" className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold text-slate-900 placeholder:text-slate-300 shadow-sm" />
                </div>
 
                <div className="space-y-3">
                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 flex items-center gap-2">
                    <Phone className="w-3 h-3" /> Phone Number
                  </label>
-                 <div className="relative">
-                    <input required type="tel" placeholder="(416) 000-0000" className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold text-slate-900 placeholder:text-slate-300 shadow-sm" />
-                 </div>
+                 <input required type="tel" placeholder="(416) 000-0000" className="w-full px-8 py-5 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white outline-none transition-all font-semibold text-slate-900 placeholder:text-slate-300 shadow-sm" />
                </div>
 
-               {/* Property Selector - Refined */}
                <div className="space-y-5 md:col-span-2">
                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 flex items-center gap-2">
                    <Home className="w-3 h-3" /> Property Type
@@ -663,7 +616,6 @@ const App: React.FC = () => {
                  </div>
                </div>
 
-               {/* Primary Need */}
                <div className="space-y-3 md:col-span-2">
                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 flex items-center gap-2">
                    <Wrench className="w-3 h-3" /> Primary Need
@@ -683,10 +635,8 @@ const App: React.FC = () => {
                  </div>
                </div>
 
-               {/* Big Submit Button */}
                <div className="md:col-span-2 pt-6">
                  <button className="w-full group/btn relative py-6 bg-slate-900 text-white rounded-3xl font-black text-xl hover:bg-blue-600 hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 shadow-2xl shadow-slate-900/30 overflow-hidden">
-                    <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_2s_infinite]"></div>
                     <span className="flex items-center justify-center gap-3 relative z-10">
                       Analyze My Request <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-2 transition-transform" />
                     </span>
@@ -775,38 +725,16 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* ElevenLabs Floating Agent Button - Demo Enhanced */}
+      {/* ElevenLabs Floating Agent Button */}
       <div id="ai-agent-trigger">
         <button 
-          onClick={() => alert("ElevenLabs AI Receptionist Widget Opening... (Agent ID: ExtremeAir_Alex_2026)")}
-          className="w-20 h-20 bg-blue-600 text-white rounded-[1.75rem] shadow-3xl shadow-blue-600/40 flex items-center justify-center hover:scale-110 active:scale-90 transition-all duration-500 group relative border-4 border-white/30 hover:rotate-6"
+          onClick={() => alert("ElevenLabs AI Receptionist Widget Opening...")}
+          className="w-20 h-20 bg-blue-600 text-white rounded-[1.75rem] shadow-3xl shadow-blue-600/40 flex items-center justify-center hover:scale-110 active:scale-90 transition-all duration-500 group relative border-4 border-white/30"
         >
           <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 border-4 border-white rounded-full shadow-lg z-20"></div>
-          <div className="absolute inset-0 bg-white/20 rounded-[1.5rem] opacity-0 group-hover:opacity-100 transition-opacity blur-lg group-hover:animate-pulse"></div>
           <Sparkles className="w-9 h-9 group-hover:scale-110 transition-transform duration-500 relative z-10" />
-          
-          <div className="absolute bottom-full right-0 mb-6 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-            <div className="bg-white text-slate-900 px-6 py-4 rounded-[2rem] text-xs font-black whitespace-nowrap shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-slate-100 relative">
-               Speak to Alex, AI Receptionist
-               <div className="text-[10px] text-blue-600 font-bold mt-2 flex items-center gap-2">
-                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                 READY FOR DISPATCH
-               </div>
-               <div className="absolute top-full right-8 w-4 h-4 bg-white rotate-45 -translate-y-1/2 border-b border-r border-slate-100"></div>
-            </div>
-          </div>
         </button>
       </div>
-      
-      <style>{`
-        @keyframes shimmer {
-          100% { transform: translateX(200%); }
-        }
-        @keyframes pulseLine {
-          0%, 100% { transform: scaleY(0.5); }
-          50% { transform: scaleY(1); }
-        }
-      `}</style>
     </div>
   );
 };
