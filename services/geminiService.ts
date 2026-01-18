@@ -10,6 +10,7 @@ export const generateStrategy = async (clientName: string): Promise<StrategyData
     contents: `Using the master HVAC business framework, generate a personalized strategy for ${clientName}. 
     Focus on the Toronto market (GTA, Etobicoke, North York). 
     Winter is the peak emergency season.
+    Include a detailed pricing strategy for common services (Furnace Repair, AC Install, Air Purification) based on 2026 GTA market rates.
     The goal is to move them from a static website to an AI-driven high-conversion machine.`,
     config: {
       responseMimeType: "application/json",
@@ -37,9 +38,21 @@ export const generateStrategy = async (clientName: string): Promise<StrategyData
             required: ["firstMessage", "features"]
           },
           emailHook: { type: Type.STRING },
-          seoKeywords: { type: Type.ARRAY, items: { type: Type.STRING } }
+          seoKeywords: { type: Type.ARRAY, items: { type: Type.STRING } },
+          pricingTiers: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                service: { type: Type.STRING },
+                range: { type: Type.STRING },
+                includes: { type: Type.ARRAY, items: { type: Type.STRING } }
+              },
+              required: ["service", "range", "includes"]
+            }
+          }
         },
-        required: ["conversionKillers", "aiScript", "emailHook", "seoKeywords"]
+        required: ["conversionKillers", "aiScript", "emailHook", "seoKeywords", "pricingTiers"]
       }
     }
   });

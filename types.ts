@@ -10,6 +10,12 @@ export interface ScriptSection {
   content: string;
 }
 
+export interface PriceTier {
+  service: string;
+  range: string;
+  includes: string[];
+}
+
 export interface StrategyData {
   conversionKillers: AuditGap[];
   aiScript: {
@@ -18,6 +24,7 @@ export interface StrategyData {
   };
   emailHook: string;
   seoKeywords: string[];
+  pricingTiers: PriceTier[];
 }
 
 export enum LoadingState {

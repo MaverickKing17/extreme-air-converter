@@ -42,7 +42,10 @@ import {
   GanttChart,
   Navigation,
   LocateFixed,
-  Radar
+  Radar,
+  Calculator,
+  TrendingUp,
+  Activity
 } from 'lucide-react';
 
 // Define the custom element for ElevenLabs to avoid TS errors
@@ -62,7 +65,7 @@ type VibeContext = {
 type PageID = 
   | 'privacy' | 'terms' | 'tssa' | 'accessibility' 
   | 'rebates' | 'warranty' | 'tracking' | 'financing' 
-  | 'emergency-protocol' | 'portal' | null;
+  | 'emergency-protocol' | 'portal' | 'pricing-guide' | null;
 
 type RegionID = 'north-york' | 'etobicoke' | 'scarborough' | 'vaughan' | 'downtown';
 
@@ -74,6 +77,61 @@ interface RegionData {
   focus: string;
 }
 
+// --- Components ---
+
+const PricingEstimatorWidget = ({ visible, onClose }: { visible: boolean, onClose: () => void }) => {
+  if (!visible) return null;
+
+  const estimates = [
+    { service: 'Emergency Furnace Repair', range: '$149 - $380', icon: Flame, color: 'text-orange-500' },
+    { service: 'AC Precision Tune-up', range: '$110 - $195', icon: Wind, color: 'text-blue-500' },
+    { service: 'High-Efficiency Install', range: '$3,800+', icon: Zap, color: 'text-yellow-500' },
+    { service: 'Ductless Heat Pump', range: '$2,400 - $6,500', icon: Thermometer, color: 'text-emerald-500' },
+  ];
+
+  return (
+    <div className="fixed bottom-28 right-6 z-50 w-72 bg-white rounded-3xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-slate-100 p-6 animate-in slide-in-from-bottom-10 duration-500 overflow-hidden">
+      <div className="absolute top-0 right-0 p-4">
+        <button onClick={onClose} className="p-1 hover:bg-slate-50 rounded-full text-slate-400"><X className="w-4 h-4" /></button>
+      </div>
+      
+      <div className="flex items-center gap-2 mb-6">
+        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg">
+          <Calculator className="w-4 h-4" />
+        </div>
+        <div>
+          <h4 className="text-sm font-black text-slate-900 leading-none">Instant Estimator</h4>
+          <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Live GTA Rates</span>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {estimates.map((est, i) => (
+          <div key={i} className="group cursor-default">
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-[10px] font-bold text-slate-500 group-hover:text-blue-600 transition-colors">{est.service}</span>
+              <span className="text-xs font-black text-slate-900">{est.range}</span>
+            </div>
+            <div className="h-1 w-full bg-slate-50 rounded-full overflow-hidden">
+               <div className={`h-full bg-slate-200 rounded-full transition-all duration-1000 group-hover:w-full`} style={{ width: '40%' }}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 pt-4 border-t border-slate-50">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+          <span className="text-[8px] font-black uppercase text-slate-400 tracking-[0.2em]">Toronto Market Premium: 4.2%</span>
+        </div>
+        <button onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })} className="w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-black hover:bg-blue-600 transition-all flex items-center justify-center gap-2 group">
+          Get Precision Quote <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // --- Shared Utilities ---
 
 const handleGlobalLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, closeMobileMenu?: () => void) => {
@@ -84,8 +142,6 @@ const handleGlobalLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: str
     if (closeMobileMenu) closeMobileMenu();
   }
 };
-
-// --- Components ---
 
 const SectionHeader = ({ badge, title, description, light = false }: any) => (
   <div className="mb-16 max-w-2xl">
@@ -135,7 +191,6 @@ const GTAInteractiveMap = () => {
           )}
         </div>
         
-        {/* Stylized SVG Map of GTA Districts */}
         <svg viewBox="0 0 500 400" className="w-full h-auto drop-shadow-2xl">
           <defs>
             <filter id="glow">
@@ -147,7 +202,6 @@ const GTAInteractiveMap = () => {
             </filter>
           </defs>
           
-          {/* Vaughan */}
           <path 
             d="M 50,50 L 250,50 L 250,150 L 50,150 Z" 
             className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'vaughan' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
@@ -156,7 +210,6 @@ const GTAInteractiveMap = () => {
           />
           <text x="110" y="105" className={`text-[12px] font-black pointer-events-none transition-colors duration-500 ${selectedRegion === 'vaughan' ? 'fill-white' : 'fill-slate-400'}`}>VAUGHAN</text>
 
-          {/* Etobicoke */}
           <path 
             d="M 50,150 L 180,150 L 180,350 L 100,350 L 50,250 Z" 
             className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'etobicoke' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
@@ -165,7 +218,6 @@ const GTAInteractiveMap = () => {
           />
           <text x="75" y="240" className={`text-[12px] font-black pointer-events-none transition-colors duration-500 ${selectedRegion === 'etobicoke' ? 'fill-white' : 'fill-slate-400'}`}>ETOBICOKE</text>
 
-          {/* North York */}
           <path 
             d="M 250,50 L 450,50 L 450,150 L 320,250 L 180,150 L 250,150 Z" 
             className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'north-york' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
@@ -174,7 +226,6 @@ const GTAInteractiveMap = () => {
           />
           <text x="270" y="105" className={`text-[12px] font-black pointer-events-none transition-colors duration-500 ${selectedRegion === 'north-york' ? 'fill-white' : 'fill-slate-400'}`}>NORTH YORK</text>
 
-          {/* Scarborough */}
           <path 
             d="M 450,50 L 490,50 L 490,300 L 320,350 L 320,250 L 450,150 Z" 
             className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'scarborough' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
@@ -183,7 +234,6 @@ const GTAInteractiveMap = () => {
           />
           <text x="365" y="180" className={`text-[12px] font-black pointer-events-none transition-colors duration-500 ${selectedRegion === 'scarborough' ? 'fill-white' : 'fill-slate-400'}`}>SCARBOROUGH</text>
 
-          {/* Downtown / Old Toronto */}
           <path 
             d="M 180,150 L 320,250 L 320,350 L 180,350 Z" 
             className={`cursor-pointer transition-all duration-500 outline-none ${selectedRegion === 'downtown' ? 'fill-blue-600' : 'fill-slate-100 hover:fill-blue-100'}`}
@@ -557,7 +607,6 @@ const PageOverlay = ({ page, onClose }: { page: PageID; onClose: () => void }) =
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/40 backdrop-blur-md animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8 duration-500 relative max-h-[90vh] flex flex-col">
-        {/* Header */}
         <div className="p-10 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/20">
@@ -569,8 +618,6 @@ const PageOverlay = ({ page, onClose }: { page: PageID; onClose: () => void }) =
             <X className="w-6 h-6 text-slate-400" />
           </button>
         </div>
-        
-        {/* Body */}
         <div className="p-10 overflow-y-auto custom-scrollbar">
           {activeContent.body}
         </div>
@@ -584,18 +631,17 @@ const App: React.FC = () => {
   const [selectedProperty, setSelectedProperty] = useState('Residential');
   const [dispatchStatus, setDispatchStatus] = useState<'live' | 'idle'>('live');
   const [activePage, setActivePage] = useState<PageID>(null);
+  const [isPricingEstimatorVisible, setIsPricingEstimatorVisible] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
 
-  // Dispatch Status Dynamic Indicator Logic
   useEffect(() => {
     let timeoutId: number;
     const updateStatus = () => {
       setDispatchStatus(prev => (prev === 'live' ? 'idle' : 'live'));
-      // Random interval between 2.5 and 7 seconds
       const nextDelay = Math.floor(Math.random() * 4500) + 2500;
       timeoutId = window.setTimeout(updateStatus, nextDelay);
     };
@@ -640,9 +686,8 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen selection:bg-blue-600 selection:text-white bg-white">
       <Navbar />
-      
-      {/* Dynamic Overlay for Links */}
       <PageOverlay page={activePage} onClose={() => setActivePage(null)} />
+      <PricingEstimatorWidget visible={isPricingEstimatorVisible} onClose={() => setIsPricingEstimatorVisible(false)} />
 
       {/* Hero Section */}
       <section id="hero" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
@@ -676,8 +721,8 @@ const App: React.FC = () => {
                 {vibe.season === 'heating' ? 'Restore My Heat' : 'Fix My AC Now'} 
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button onClick={handleCTA} className="px-10 py-5 bg-white border border-slate-200 text-slate-900 rounded-2xl font-bold hover:bg-slate-50 hover:scale-[1.03] active:scale-[0.97] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-100">
-                <Sparkles className="w-5 h-5 text-blue-500" /> Instant Quote
+              <button onClick={() => setIsPricingEstimatorVisible(true)} className="px-10 py-5 bg-white border border-slate-200 text-slate-900 rounded-2xl font-bold hover:bg-slate-50 hover:scale-[1.03] active:scale-[0.97] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-100">
+                <Calculator className="w-5 h-5 text-blue-500" /> Instant Estimator
               </button>
             </div>
             
@@ -699,7 +744,6 @@ const App: React.FC = () => {
              <div className="relative z-10 bg-gradient-to-br from-slate-200 to-slate-100 rounded-[3.5rem] aspect-square overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border-8 border-white group-hover/hero:shadow-[0_50px_100px_-20px_rgba(0,86,179,0.1)] transition-all duration-700">
                 <img src={vibe.heroImage} className="w-full h-full object-cover transition-all duration-1000 scale-100 group-hover/hero:scale-105" alt="Extreme Air HVAC Control Center" />
              </div>
-
              <div className={`absolute -top-16 -right-16 w-80 h-80 ${vibe.season === 'heating' ? 'bg-orange-500/20' : 'bg-blue-600/20'} rounded-full blur-[120px] animate-pulse pointer-events-none`}></div>
              <div className="absolute -bottom-16 -left-16 w-80 h-80 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
           </div>
@@ -714,20 +758,19 @@ const App: React.FC = () => {
             title="Elite Climate Engineering."
             description="Since 2006, Extreme Air has redefined indoor environments. We don't just fix boxes; we engineer systems for the 2026 efficiency standard."
           />
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <ServiceCard icon={Flame} title="Advanced Heating" description="High-efficiency furnace installation and smart boiler repair. We specialize in 98% AFUE systems." badge={vibe.season === 'heating' ? "High Demand" : "Early Bird"} />
             <ServiceCard icon={Wind} title="Precision Cooling" description="AC diagnostic and luxury heat pump integration. Silent, powerful, and ready for Toronto heat." badge={vibe.season === 'cooling' ? "Active Repair" : undefined} />
             <ServiceCard icon={Droplets} title="Modern Hydronics" description="Luxury in-floor heating and tankless water solutions. Experience the ultimate comfort." />
             <ServiceCard icon={Sparkles} title="Pure Air Systems" description="Hospital-grade HEPA and UV-C sterilization. Eliminate 99.9% of bacteria." badge="Best Seller" />
             <ServiceCard icon={Calendar} title="Maintenance Plans" description="Join our 'Comfort First' club for automated health checks and priority dispatching." />
-            <div className="bg-blue-600 p-10 rounded-[2rem] text-white flex flex-col justify-center items-center text-center group cursor-pointer hover:bg-blue-700 transition-all shadow-xl shadow-blue-900/20 hover:scale-[1.02]">
+            <div onClick={() => setIsPricingEstimatorVisible(true)} className="bg-blue-600 p-10 rounded-[2rem] text-white flex flex-col justify-center items-center text-center group cursor-pointer hover:bg-blue-700 transition-all shadow-xl shadow-blue-900/20 hover:scale-[1.02]">
                <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-inner">
-                  <Wrench className="w-8 h-8" />
+                  <Calculator className="w-8 h-8" />
                </div>
-               <h3 className="text-2xl font-bold mb-4">Request Master Tech</h3>
-               <p className="text-blue-100 mb-8 font-medium text-sm leading-relaxed">Highly rated technicians currently stationed in Etobicoke, North York, and Scarborough.</p>
-               <button onClick={handleCTA} className="w-full py-4 bg-white text-blue-600 rounded-2xl font-bold hover:bg-blue-50 transition-colors shadow-lg active:scale-95">Check Live Map</button>
+               <h3 className="text-2xl font-bold mb-4">Live Price Guide</h3>
+               <p className="text-blue-100 mb-8 font-medium text-sm leading-relaxed">Instantly see current market rates for residential repairs across the GTA.</p>
+               <button className="w-full py-4 bg-white text-blue-600 rounded-2xl font-bold hover:bg-blue-50 transition-colors shadow-lg active:scale-95">Check Estimates</button>
             </div>
           </div>
         </div>
@@ -738,11 +781,7 @@ const App: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="relative">
              <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl relative group bg-white">
-                <img 
-                  src="https://i.ibb.co/MyPjLx2D/gpt-image-1-5-a-A-professional-high.png" 
-                  className="w-full h-full object-cover transition-all duration-700 hover:scale-105" 
-                  alt="Extreme Air Professional Customer Service" 
-                />
+                <img src="https://i.ibb.co/MyPjLx2D/gpt-image-1-5-a-A-professional-high.png" className="w-full h-full object-cover transition-all duration-700 hover:scale-105" alt="Extreme Air Professional Customer Service" />
                 <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/95 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl">
                    <div className="flex items-center gap-4 mb-3">
                       <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold">18</div>
@@ -757,8 +796,13 @@ const App: React.FC = () => {
             <div className="space-y-8">
               {[
                 { icon: ShieldCheck, title: "Uncompromising Trust", text: "Every technician is TSSA licensed, fully insured, and background-checked." },
-                { icon: Zap, title: "Response Intelligence", text: "Our proprietary AI-dispatch system routes the nearest expert to your door." },
-                { icon: Star, title: "Results-Only Billing", text: "We quote upfront. No hidden fees, no hourly surprises." }
+                { 
+                  icon: Activity, 
+                  title: "Response Intelligence", 
+                  status: true,
+                  text: "Our proprietary AI-dispatch system routes the nearest expert to your door." 
+                },
+                { icon: TrendingUp, title: "Market Transparency", text: "We provide live, automated cost estimations before you even book a call." }
               ].map((item, i) => (
                 <div key={i} className="flex gap-6 group">
                   <div className="flex-shrink-0 w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 group-hover:shadow-lg group-hover:shadow-blue-200">
@@ -767,7 +811,7 @@ const App: React.FC = () => {
                   <div>
                     <div className="flex items-center gap-3 mb-1">
                       <h4 className="font-bold text-lg text-slate-900 group-hover:text-blue-600 transition-colors">{item.title}</h4>
-                      {item.title === "Response Intelligence" && (
+                      {item.status && (
                         <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider transition-all duration-700 ${dispatchStatus === 'live' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-[0_0_20px_rgba(16,185,129,0.15)] scale-100' : 'bg-slate-100 text-slate-400 border border-slate-200 scale-95 opacity-50 grayscale'}`}>
                            <div className="relative flex items-center justify-center w-2 h-2">
                              {dispatchStatus === 'live' && <span className="absolute w-full h-full rounded-full bg-emerald-400 animate-ping opacity-75"></span>}
@@ -802,11 +846,7 @@ const App: React.FC = () => {
       {/* Service Area Domain Section */}
       <section id="service-area" className="py-24 lg:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <SectionHeader 
-            badge="Coverage"
-            title="Our Service Domain."
-            description="Extreme Air operates a fleet of master technicians strategically stationed across the Greater Toronto Area to ensure industry-leading response times."
-          />
+          <SectionHeader badge="Coverage" title="Our Service Domain." description="Extreme Air operates a fleet of master technicians strategically stationed across the Greater Toronto Area." />
           <GTAInteractiveMap />
         </div>
       </section>
@@ -846,21 +886,16 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* Footer Section */}
+      {/* Footer */}
       <footer className="bg-slate-950 pt-24 pb-12 text-slate-400 px-6 border-t border-slate-900">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
-            {/* Column 1: Brand */}
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
-                  <Thermometer className="w-6 h-6" />
-                </div>
+                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20"><Thermometer className="w-6 h-6" /></div>
                 <span className="text-2xl font-black text-white tracking-tighter">EXTREME AIR</span>
               </div>
-              <p className="text-sm leading-relaxed font-medium">
-                Toronto's elite climate engineering firm. Providing precision heating, luxury cooling, and high-performance air quality solutions across the GTA since 2006.
-              </p>
+              <p className="text-sm leading-relaxed font-medium">Toronto's elite climate engineering firm. Providing precision heating, luxury cooling, and high-performance solutions across the GTA since 2006.</p>
               <div className="flex items-center gap-4">
                 <a href="#" className="p-2 bg-slate-900 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><Facebook className="w-4 h-4" /></a>
                 <a href="#" className="p-2 bg-slate-900 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><Instagram className="w-4 h-4" /></a>
@@ -868,8 +903,6 @@ const App: React.FC = () => {
                 <a href="#" className="p-2 bg-slate-900 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><Linkedin className="w-4 h-4" /></a>
               </div>
             </div>
-
-            {/* Column 2: Solutions */}
             <div className="space-y-6">
               <h4 className="text-sm font-black uppercase tracking-[0.2em] text-white">Advanced Solutions</h4>
               <ul className="space-y-4">
@@ -882,8 +915,6 @@ const App: React.FC = () => {
                 ))}
               </ul>
             </div>
-
-            {/* Column 3: Support Ecosystem */}
             <div className="space-y-6">
               <h4 className="text-sm font-black uppercase tracking-[0.2em] text-white">Client Support</h4>
               <ul className="space-y-4">
@@ -896,10 +927,7 @@ const App: React.FC = () => {
                   { id: 'portal', label: 'Member Portal', icon: User }
                 ].map((link) => (
                   <li key={link.label}>
-                    <button 
-                      onClick={() => setActivePage(link.id as PageID)} 
-                      className="text-sm font-semibold hover:text-blue-500 transition-colors flex items-center gap-2 group text-left"
-                    >
+                    <button onClick={() => setActivePage(link.id as PageID)} className="text-sm font-semibold hover:text-blue-500 transition-colors flex items-center gap-2 group text-left">
                       <link.icon className="w-4 h-4 text-slate-600 group-hover:text-blue-500 transition-colors" />
                       {link.label}
                     </button>
@@ -907,8 +935,6 @@ const App: React.FC = () => {
                 ))}
               </ul>
             </div>
-
-            {/* Column 4: Location & Contact */}
             <div className="space-y-6">
               <h4 className="text-sm font-black uppercase tracking-[0.2em] text-white">HQ Status</h4>
               <div className="p-6 bg-slate-900 rounded-3xl border border-slate-800 space-y-4">
@@ -920,63 +946,32 @@ const App: React.FC = () => {
                   <Phone className="w-5 h-5 text-emerald-500" />
                   <a href="tel:4167282224" className="text-sm font-black text-white">(416) 728-2224</a>
                 </div>
-                <div className="pt-2">
-                   <div className="text-[10px] font-black uppercase text-slate-500 mb-2">Service Radius</div>
-                   <div className="flex flex-wrap gap-2">
-                      {['North York', 'Etobicoke', 'Scarborough', 'Vaughan'].map(city => (
-                        <span key={city} className="px-2 py-1 bg-slate-950 rounded-md text-[9px] font-bold border border-slate-800">{city}</span>
-                      ))}
-                   </div>
-                </div>
               </div>
             </div>
           </div>
-
-          {/* Bottom Bar: Legal & Compliance */}
           <div className="pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-4">
-              <button onClick={() => setActivePage('privacy')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
-                <Scale className="w-3 h-3" /> Privacy & Data Policy
-              </button>
-              <button onClick={() => setActivePage('terms')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
-                <FileText className="w-3 h-3" /> Terms of Service
-              </button>
-              <button onClick={() => setActivePage('tssa')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
-                <ShieldHalf className="w-3 h-3" /> TSSA Compliance
-              </button>
-              <button onClick={() => setActivePage('accessibility')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">
-                Accessibility Statement
-              </button>
+              <button onClick={() => setActivePage('privacy')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2"><Scale className="w-3 h-3" /> Privacy Policy</button>
+              <button onClick={() => setActivePage('terms')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2"><FileText className="w-3 h-3" /> Terms of Service</button>
+              <button onClick={() => setActivePage('tssa')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2"><ShieldHalf className="w-3 h-3" /> TSSA Compliance</button>
             </div>
-            
             <div className="flex items-center gap-6">
                <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                   <span className="text-[10px] font-black uppercase tracking-widest">Network Secure</span>
                </div>
-               <button 
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="p-3 bg-white text-slate-900 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-xl active:scale-90"
-                  aria-label="Back to top"
-                >
-                 <ArrowUp className="w-4 h-4" />
-               </button>
+               <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="p-3 bg-white text-slate-900 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-xl active:scale-90"><ArrowUp className="w-4 h-4" /></button>
             </div>
           </div>
-          
           <div className="mt-12 text-center">
-            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.3em]">
-              &copy; 2026 Extreme Air Heating & Cooling. TSSA Master Contractor #8821.
-            </p>
+            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.3em]">&copy; 2026 Extreme Air Heating & Cooling. TSSA #8821.</p>
           </div>
         </div>
       </footer>
 
-      {/* ElevenLabs AI Receptionist Widget Integration */}
+      {/* ElevenLabs Widget */}
       <div className="fixed bottom-6 right-6 z-50">
-        <ElevenLabsConvai 
-          agent-id="agent_5801kf7b11q4ec7vrnpht15b9gqf"
-        ></ElevenLabsConvai>
+        <ElevenLabsConvai agent-id="agent_5801kf7b11q4ec7vrnpht15b9gqf"></ElevenLabsConvai>
       </div>
     </div>
   );
