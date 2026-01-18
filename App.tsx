@@ -186,10 +186,24 @@ const Navbar = () => {
 const App: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedProperty, setSelectedProperty] = useState('Residential');
+  const [dispatchStatus, setDispatchStatus] = useState<'live' | 'idle'>('live');
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Dispatch Status Dynamic Indicator Logic
+  useEffect(() => {
+    let timeoutId: number;
+    const updateStatus = () => {
+      setDispatchStatus(prev => (prev === 'live' ? 'idle' : 'live'));
+      // Random interval between 2.5 and 7 seconds
+      const nextDelay = Math.floor(Math.random() * 4500) + 2500;
+      timeoutId = window.setTimeout(updateStatus, nextDelay);
+    };
+    timeoutId = window.setTimeout(updateStatus, 3000);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const vibe: VibeContext = useMemo(() => {
@@ -351,7 +365,15 @@ const App: React.FC = () => {
                     <item.icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg mb-1 text-slate-900 group-hover:text-blue-600 transition-colors">{item.title}</h4>
+                    <div className="flex items-center gap-3 mb-1">
+                      <h4 className="font-bold text-lg text-slate-900 group-hover:text-blue-600 transition-colors">{item.title}</h4>
+                      {item.title === "Response Intelligence" && (
+                        <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider transition-all duration-500 ${dispatchStatus === 'live' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-400 border border-slate-200'}`}>
+                           <span className={`w-1.5 h-1.5 rounded-full ${dispatchStatus === 'live' ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-400'}`}></span>
+                           {dispatchStatus === 'live' ? 'Live Dispatching' : 'System Idle'}
+                        </div>
+                      )}
+                    </div>
                     <p className="text-slate-500 text-sm leading-relaxed">{item.text}</p>
                   </div>
                 </div>
