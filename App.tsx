@@ -26,7 +26,16 @@ import {
   Building2,
   Home,
   Factory,
-  ChevronDown
+  ChevronDown,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Twitter,
+  ExternalLink,
+  Scale,
+  FileText,
+  ShieldHalf,
+  ArrowUp
 } from 'lucide-react';
 
 // Define the custom element for ElevenLabs to avoid TS errors
@@ -115,7 +124,7 @@ const Navbar = () => {
     { name: 'Services', href: '#services' },
     { name: 'About', href: '#about' },
     { name: 'Emergency', href: '#emergency' },
-    { name: 'Locations', href: '#locations' },
+    { name: 'Contact', href: '#contact' },
   ];
 
   return (
@@ -431,15 +440,126 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      <footer className="bg-slate-950 pt-24 pb-12 text-slate-400 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-           <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white">
-                <Thermometer className="w-6 h-6" />
+      {/* Footer Section */}
+      <footer className="bg-slate-950 pt-24 pb-12 text-slate-400 px-6 border-t border-slate-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
+            {/* Column 1: Brand */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+                  <Thermometer className="w-6 h-6" />
+                </div>
+                <span className="text-2xl font-black text-white tracking-tighter">EXTREME AIR</span>
               </div>
-              <span className="text-2xl font-black text-white tracking-tighter">EXTREME AIR</span>
-           </div>
-           <p className="text-xs">&copy; 2026 Extreme Air Heating & Cooling. All Rights Reserved.</p>
+              <p className="text-sm leading-relaxed font-medium">
+                Toronto's elite climate engineering firm. Providing precision heating, luxury cooling, and high-performance air quality solutions across the GTA since 2006.
+              </p>
+              <div className="flex items-center gap-4">
+                <a href="#" className="p-2 bg-slate-900 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><Facebook className="w-4 h-4" /></a>
+                <a href="#" className="p-2 bg-slate-900 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><Instagram className="w-4 h-4" /></a>
+                <a href="#" className="p-2 bg-slate-900 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><Twitter className="w-4 h-4" /></a>
+                <a href="#" className="p-2 bg-slate-900 rounded-lg hover:bg-blue-600 hover:text-white transition-all"><Linkedin className="w-4 h-4" /></a>
+              </div>
+            </div>
+
+            {/* Column 2: Solutions */}
+            <div className="space-y-6">
+              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-white">Advanced Solutions</h4>
+              <ul className="space-y-4">
+                {['Furnace Engineering', 'Heat Pump Conversion', 'IAQ & Sterilization', 'Luxury Hydronics', 'Commercial HVAC', 'Custom Ductwork'].map((link) => (
+                  <li key={link}>
+                    <a href="#services" onClick={(e) => handleGlobalLinkClick(e, '#services')} className="text-sm font-semibold hover:text-blue-500 transition-colors flex items-center justify-between group">
+                      {link} <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Column 3: Support Ecosystem */}
+            <div className="space-y-6">
+              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-white">Client Support</h4>
+              <ul className="space-y-4">
+                {[
+                  { label: 'Ontario Rebate Guide', icon: Sparkles },
+                  { label: 'Warranty Registration', icon: CheckCircle2 },
+                  { label: 'Repair Tracking', icon: MapPin },
+                  { label: 'Financing Options', icon: Zap },
+                  { label: 'Emergency Protocol', icon: ShieldAlert },
+                  { label: 'Member Portal', icon: User }
+                ].map((link) => (
+                  <li key={link.label}>
+                    <a href="#contact" onClick={(e) => handleGlobalLinkClick(e, '#contact')} className="text-sm font-semibold hover:text-blue-500 transition-colors flex items-center gap-2 group">
+                      <link.icon className="w-4 h-4 text-slate-600 group-hover:text-blue-500 transition-colors" />
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Column 4: Location & Contact */}
+            <div className="space-y-6">
+              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-white">HQ Status</h4>
+              <div className="p-6 bg-slate-900 rounded-3xl border border-slate-800 space-y-4">
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-5 h-5 text-blue-500 shrink-0 mt-1" />
+                  <p className="text-sm font-bold text-slate-300">1200 Sheppard Ave E, <br />North York, ON M2K 2S5</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="w-5 h-5 text-emerald-500" />
+                  <a href="tel:4167282224" className="text-sm font-black text-white">(416) 728-2224</a>
+                </div>
+                <div className="pt-2">
+                   <div className="text-[10px] font-black uppercase text-slate-500 mb-2">Service Radius</div>
+                   <div className="flex flex-wrap gap-2">
+                      {['North York', 'Etobicoke', 'Scarborough', 'Vaughan'].map(city => (
+                        <span key={city} className="px-2 py-1 bg-slate-950 rounded-md text-[9px] font-bold border border-slate-800">{city}</span>
+                      ))}
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar: Legal & Compliance */}
+          <div className="pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-4">
+              <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
+                <Scale className="w-3 h-3" /> Privacy & Data Policy
+              </a>
+              <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
+                <FileText className="w-3 h-3" /> Terms of Service
+              </a>
+              <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
+                <ShieldHalf className="w-3 h-3" /> TSSA Compliance
+              </a>
+              <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">
+                Accessibility Statement
+              </a>
+            </div>
+            
+            <div className="flex items-center gap-6">
+               <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                  <span className="text-[10px] font-black uppercase tracking-widest">Network Secure</span>
+               </div>
+               <button 
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className="p-3 bg-white text-slate-900 rounded-full hover:bg-blue-600 hover:text-white transition-all shadow-xl active:scale-90"
+                  aria-label="Back to top"
+                >
+                 <ArrowUp className="w-4 h-4" />
+               </button>
+            </div>
+          </div>
+          
+          <div className="mt-12 text-center">
+            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.3em]">
+              &copy; 2026 Extreme Air Heating & Cooling. TSSA Master Contractor #8821.
+            </p>
+          </div>
         </div>
       </footer>
 
