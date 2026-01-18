@@ -1,0 +1,7 @@
+{
+  "name": "Extreme Air HVAC - Toronto's Elite Climate Engineering",
+  "description": "2026 next-gen HVAC service portal for Extreme Air Heating & Cooling, featuring AI smart quotes and real-time GTA dispatching.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
