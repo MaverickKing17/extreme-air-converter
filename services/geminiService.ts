@@ -1,11 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { StrategyData } from "../types";
 
-// Initialize the GoogleGenAI client using the environment variable API_KEY directly.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export const generateStrategy = async (clientName: string): Promise<StrategyData> => {
-  // Use ai.models.generateContent to query the model with both name and prompt.
+  // Initialize INSIDE the function to ensure process.env polyfill is ready
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
   const response = await ai.models.generateContent({
     model: "gemini-3-pro-preview",
     contents: `Using the master HVAC business framework, generate a personalized strategy for ${clientName}. 
@@ -45,7 +44,6 @@ export const generateStrategy = async (clientName: string): Promise<StrategyData
     }
   });
 
-  // Extract the text output using the .text property from the response object.
   const text = response.text;
   if (!text) throw new Error("No response from AI");
   return JSON.parse(text) as StrategyData;
