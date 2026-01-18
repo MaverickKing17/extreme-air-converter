@@ -28,7 +28,12 @@ import {
   Building2,
   Home,
   Factory,
-  ChevronDown
+  ChevronDown,
+  Activity,
+  Cpu,
+  BarChart3,
+  Gauge,
+  Signal
 } from 'lucide-react';
 
 // --- Types ---
@@ -186,10 +191,28 @@ const TrustIndicator = ({ icon: Icon, label, sub }: any) => (
 const App: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedProperty, setSelectedProperty] = useState('Residential');
+  const [liveLogIndex, setLiveLogIndex] = useState(0);
+
+  const monitoringLogs = [
+    "Analyzing GTA thermal patterns...",
+    "Optimizing compressor efficiency...",
+    "HEPA filter status: 98% nominal",
+    "Sensor sync: M5V 1J2 active",
+    "Smart-dispatch: Hub North connected",
+    "Humidity calibration complete",
+    "Energy consumption: Low-draw state",
+    "System backup: Cloud sync active"
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
-    return () => clearInterval(timer);
+    const logTimer = setInterval(() => {
+      setLiveLogIndex(prev => (prev + 1) % monitoringLogs.length);
+    }, 2500);
+    return () => {
+      clearInterval(timer);
+      clearInterval(logTimer);
+    };
   }, []);
 
   const vibe: VibeContext = useMemo(() => {
@@ -286,24 +309,92 @@ const App: React.FC = () => {
             </div>
           </div>
           
-          <div className="relative animate-in zoom-in duration-1000">
-             <div className="relative z-10 bg-gradient-to-br from-slate-200 to-slate-100 rounded-[3rem] aspect-square overflow-hidden shadow-2xl border-8 border-white group">
-                <img src={vibe.heroImage} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110" alt="HVAC Tech" />
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/40 to-transparent"></div>
-                <div className="absolute bottom-10 left-10 right-10 p-8 bg-white/95 backdrop-blur rounded-3xl border border-white shadow-xl">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 ${vibe.season === 'heating' ? 'bg-orange-500' : 'bg-cyan-500'} rounded-full flex items-center justify-center text-white shadow-lg`}>
-                      {vibe.season === 'heating' ? <Flame className="w-6 h-6" /> : <Wind className="w-6 h-6" />}
+          {/* Enhanced Hero Visual - Professional Control Center Enhancement */}
+          <div className="relative animate-in zoom-in duration-1000 group/hero">
+             <div className="relative z-10 bg-gradient-to-br from-slate-200 to-slate-100 rounded-[3.5rem] aspect-square overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border-8 border-white group-hover/hero:shadow-[0_50px_100px_-20px_rgba(0,86,179,0.1)] transition-all duration-700">
+                <img src={vibe.heroImage} className="w-full h-full object-cover grayscale opacity-80 group-hover/hero:grayscale-0 group-hover/hero:opacity-100 transition-all duration-1000 scale-110 group-hover/hero:scale-105" alt="HVAC Visual" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/60 via-transparent to-transparent"></div>
+
+                {/* Live Telemetry Overlays */}
+                <div className="absolute top-8 left-8 right-8 flex justify-between items-start pointer-events-none">
+                   <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 flex items-center gap-3 animate-in slide-in-from-top duration-700 delay-500 shadow-2xl">
+                      <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                      <span className="text-[10px] font-black text-white uppercase tracking-widest">Master Cloud Sync</span>
+                   </div>
+                   <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 flex items-center gap-3 animate-in slide-in-from-top duration-700 delay-700 shadow-2xl">
+                      <Cpu className="w-4 h-4 text-blue-400" />
+                      <span className="text-[10px] font-black text-white uppercase tracking-widest">AI Hub v4.8</span>
+                   </div>
+                </div>
+
+                {/* Control Center Sidebar Readouts */}
+                <div className="absolute top-1/2 left-8 -translate-y-1/2 flex flex-col gap-5 animate-in slide-in-from-left duration-1000 delay-500">
+                   {[
+                     { icon: Gauge, label: "Pressure", val: "14.7 psi", sub: "Nominal", color: "text-blue-400" },
+                     { icon: Activity, label: "Efficiency", val: "99.4%", sub: "Peak Load", color: "text-emerald-400" },
+                     { icon: Wind, label: "IAQ Index", val: "98/100", sub: "HEPA Active", color: "text-cyan-400" }
+                   ].map((sensor, idx) => (
+                     <div key={idx} className="bg-slate-950/40 backdrop-blur-xl border border-white/10 rounded-[1.5rem] p-4 flex items-center gap-5 hover:bg-slate-950/60 transition-all cursor-default group/sensor hover:scale-105">
+                        <div className={`p-3 bg-white/5 rounded-2xl ${sensor.color} group-hover/sensor:scale-110 transition-transform shadow-inner`}>
+                           <sensor.icon className="w-5 h-5" />
+                        </div>
+                        <div className="hidden sm:block">
+                           <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">{sensor.label}</div>
+                           <div className="text-sm font-black text-white leading-none mb-1">{sensor.val}</div>
+                           <div className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">{sensor.sub}</div>
+                        </div>
+                     </div>
+                   ))}
+                </div>
+
+                {/* Professional Status Bar Enhancement - Demo Ready */}
+                <div className="absolute bottom-10 left-10 right-10 p-1.5 bg-white/95 backdrop-blur-3xl rounded-[3rem] border border-white shadow-[0_40px_80px_-15px_rgba(0,0,0,0.15)] transition-all duration-700 group-hover/hero:-translate-y-4 group-hover/hero:shadow-blue-500/10">
+                  <div className="flex items-center justify-between px-8 py-6">
+                    <div className="flex items-center gap-7">
+                      <div className={`relative w-16 h-16 ${vibe.season === 'heating' ? 'bg-orange-500 shadow-orange-500/30' : 'bg-cyan-500 shadow-cyan-500/30'} rounded-[1.75rem] flex items-center justify-center text-white shadow-2xl transition-all duration-700 group-hover/hero:rotate-[-8deg] group-hover/hero:scale-110`}>
+                        {vibe.season === 'heating' ? <Flame className="w-8 h-8" /> : <Wind className="w-8 h-8" />}
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center">
+                           <div className="w-1.5 h-1.5 bg-blue-600 rounded-full animate-ping"></div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-col justify-center">
+                        <div className="flex items-center gap-3 mb-1.5">
+                           <span className="text-base font-black text-slate-900 tracking-tight">Current Status: GTA Active</span>
+                           <Signal className="w-3.5 h-3.5 text-blue-500 animate-pulse" />
+                        </div>
+                        <div className="relative text-xs text-slate-500 font-bold uppercase tracking-[0.15em] overflow-hidden h-4">
+                           <div className="transition-all duration-1000 cubic-bezier(0.65, 0, 0.35, 1)" style={{ transform: `translateY(-${liveLogIndex * 16}px)` }}>
+                              {monitoringLogs.map((log, i) => (
+                                <div key={i} className="h-4 flex items-center gap-2">
+                                   <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
+                                   {log}
+                                </div>
+                              ))}
+                           </div>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-sm font-bold text-slate-900">Current Status: GTA Active</div>
-                      <div className="text-xs text-slate-500">Dispatching in North York & Etobicoke</div>
+
+                    <div className="hidden lg:flex items-center gap-10">
+                       {/* Pulse Animation Waveform */}
+                       <div className="flex items-center gap-1 h-8 opacity-40 group-hover/hero:opacity-100 transition-opacity">
+                          {[3, 5, 8, 4, 9, 6, 2, 7, 5, 3].map((h, i) => (
+                            <div key={i} className="w-1 bg-blue-500 rounded-full animate-[pulse_1.5s_infinite]" style={{ height: `${h * 10}%`, animationDelay: `${i * 0.1}s` }}></div>
+                          ))}
+                       </div>
+                       <div className="flex flex-col items-end border-l border-slate-100 pl-10">
+                          <BarChart3 className="w-6 h-6 text-slate-800 mb-1 group-hover/hero:scale-110 transition-transform" />
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Data Stream</span>
+                       </div>
                     </div>
                   </div>
                 </div>
              </div>
-             <div className={`absolute -top-10 -right-10 w-48 h-48 ${vibe.season === 'heating' ? 'bg-orange-400/20' : 'bg-cyan-400/20'} rounded-full blur-[80px] animate-pulse`}></div>
-             <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-blue-600/10 rounded-full blur-[80px]"></div>
+
+             {/* Background Atmosphere */}
+             <div className={`absolute -top-12 -right-12 w-80 h-80 ${vibe.season === 'heating' ? 'bg-orange-500/30' : 'bg-cyan-500/30'} rounded-full blur-[120px] animate-pulse pointer-events-none opacity-50`}></div>
+             <div className="absolute -bottom-12 -left-12 w-80 h-80 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none opacity-50"></div>
           </div>
         </div>
       </section>
@@ -667,7 +758,7 @@ const App: React.FC = () => {
              <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 relative overflow-hidden group hover:border-red-600/30 transition-all duration-700">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-[40px] group-hover:bg-red-600/20 transition-all duration-700"></div>
                 <div className="text-2xl font-black text-white mb-3 underline decoration-red-600 decoration-4 tracking-tighter transition-all group-hover:scale-105 active:scale-95 cursor-pointer" onClick={() => window.location.href='tel:4167282224'}>(416) 728-2224</div>
-                <p className="text-[10px] uppercase font-black tracking-widest text-red-500 mb-6 animate-pulse">Dispatch Live Across GTA</p>
+                <p className="text-[10px] uppercase font-black tracking-widest text-red-500 mb-4 animate-pulse">Dispatch Live Across GTA</p>
                 <button onClick={() => window.location.href='tel:4167282224'} className="w-full py-4 bg-white/10 hover:bg-white text-white hover:text-slate-900 rounded-2xl text-xs font-black transition-all border border-white/10 hover:shadow-xl hover:shadow-white/10 active:scale-95">Call Master Agent</button>
              </div>
              <p className="mt-8 text-[9px] text-slate-600 leading-relaxed uppercase tracking-[0.2em] font-black">TSSA License #7721-0021-99 • HRAI Member</p>
@@ -694,7 +785,6 @@ const App: React.FC = () => {
           <div className="absolute inset-0 bg-white/20 rounded-[1.5rem] opacity-0 group-hover:opacity-100 transition-opacity blur-lg group-hover:animate-pulse"></div>
           <Sparkles className="w-9 h-9 group-hover:scale-110 transition-transform duration-500 relative z-10" />
           
-          {/* Tooltip refined */}
           <div className="absolute bottom-full right-0 mb-6 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
             <div className="bg-white text-slate-900 px-6 py-4 rounded-[2rem] text-xs font-black whitespace-nowrap shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-slate-100 relative">
                Speak to Alex, AI Receptionist
@@ -702,7 +792,6 @@ const App: React.FC = () => {
                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                  READY FOR DISPATCH
                </div>
-               {/* Arrow */}
                <div className="absolute top-full right-8 w-4 h-4 bg-white rotate-45 -translate-y-1/2 border-b border-r border-slate-100"></div>
             </div>
           </div>
@@ -712,6 +801,10 @@ const App: React.FC = () => {
       <style>{`
         @keyframes shimmer {
           100% { transform: translateX(200%); }
+        }
+        @keyframes pulseLine {
+          0%, 100% { transform: scaleY(0.5); }
+          50% { transform: scaleY(1); }
         }
       `}</style>
     </div>
