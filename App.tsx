@@ -29,7 +29,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 
-// Use a safer way to handle custom elements for ElevenLabs
+// Define the custom element for ElevenLabs to avoid TS errors
 const ElevenLabsConvai = 'elevenlabs-convai' as any;
 
 // --- Types ---
@@ -323,10 +323,13 @@ const App: React.FC = () => {
       <section id="about" className="py-24 lg:py-32 bg-slate-50 border-y border-slate-100">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="relative">
-             <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl relative group">
-                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0" alt="Tech at work" />
-                <div className="absolute inset-0 bg-blue-900/20 backdrop-blur-[1px]"></div>
-                <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/95 backdrop-blur rounded-3xl border border-white/50 shadow-xl">
+             <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl relative group bg-white">
+                <img 
+                  src="https://i.ibb.co/MyPjLx2D/gpt-image-1-5-a-A-professional-high.png" 
+                  className="w-full h-full object-cover transition-all duration-700 hover:scale-105" 
+                  alt="Extreme Air Professional Customer Service" 
+                />
+                <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/95 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl">
                    <div className="flex items-center gap-4 mb-3">
                       <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold">18</div>
                       <div className="text-sm font-bold text-slate-900 uppercase tracking-widest">Years of Excellence</div>
@@ -418,7 +421,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Real ElevenLabs AI Receptionist Widget */}
+      {/* ElevenLabs AI Receptionist Widget Integration */}
       <div className="fixed bottom-6 right-6 z-50">
         <ElevenLabsConvai agent-id="agent_5801kf7b11q4ec7vrnpht15b9gqf"></ElevenLabsConvai>
       </div>
