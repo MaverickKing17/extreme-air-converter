@@ -35,7 +35,11 @@ import {
   Scale,
   FileText,
   ShieldHalf,
-  ArrowUp
+  ArrowUp,
+  Info,
+  Clock,
+  DollarSign,
+  GanttChart
 } from 'lucide-react';
 
 // Define the custom element for ElevenLabs to avoid TS errors
@@ -51,6 +55,11 @@ type VibeContext = {
   themeColor: string;
   accentGradient: string;
 };
+
+type PageID = 
+  | 'privacy' | 'terms' | 'tssa' | 'accessibility' 
+  | 'rebates' | 'warranty' | 'tracking' | 'financing' 
+  | 'emergency-protocol' | 'portal' | null;
 
 // --- Shared Utilities ---
 
@@ -192,10 +201,235 @@ const Navbar = () => {
   );
 };
 
+const PageOverlay = ({ page, onClose }: { page: PageID; onClose: () => void }) => {
+  if (!page) return null;
+
+  const contentMap: Record<string, { title: string; icon: any; body: React.ReactNode }> = {
+    privacy: {
+      title: 'Privacy & Data Policy',
+      icon: Scale,
+      body: (
+        <div className="space-y-6">
+          <p className="text-slate-600">Extreme Air Heating & Cooling ("we," "us," or "our") is committed to protecting your privacy in accordance with Canada’s Personal Information Protection and Electronic Documents Act (PIPEDA).</p>
+          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <h4 className="font-bold text-slate-900 mb-2">What we collect</h4>
+            <ul className="list-disc pl-5 text-sm text-slate-600 space-y-1">
+              <li>Contact info provided via our Smart Estimate form.</li>
+              <li>Voice transcripts from our AI Receptionist (ElevenLabs) for quality assurance.</li>
+              <li>Geolocation data to route the nearest technician.</li>
+            </ul>
+          </div>
+          <p className="text-sm text-slate-500 italic">Last updated: January 2026. We never sell your data to third-party marketing firms.</p>
+        </div>
+      )
+    },
+    terms: {
+      title: 'Terms of Service',
+      icon: FileText,
+      body: (
+        <div className="space-y-6">
+          <p className="text-slate-600 font-medium">Agreement for Residential and Commercial HVAC Services in the Province of Ontario.</p>
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0"><ShieldCheck className="w-5 h-5" /></div>
+              <div>
+                <h5 className="font-bold text-slate-900">Service Guarantees</h5>
+                <p className="text-sm text-slate-500">All repair work includes a 1-year labor warranty. Installations are subject to manufacturer-specific parts warranties (typically 10 years).</p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0"><DollarSign className="w-5 h-5" /></div>
+              <div>
+                <h5 className="font-bold text-slate-900">Billing & Estimates</h5>
+                <p className="text-sm text-slate-500">Diagnostic fees are waived upon approval of repair quotes. Emergency premiums apply for calls between 10 PM and 6 AM.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    tssa: {
+      title: 'TSSA Compliance',
+      icon: ShieldHalf,
+      body: (
+        <div className="space-y-6">
+          <div className="bg-blue-600 text-white p-8 rounded-3xl shadow-xl shadow-blue-600/20">
+            <h4 className="text-xl font-bold mb-2">Contractor License #8821</h4>
+            <p className="text-blue-100 text-sm">Extreme Air is a fully registered fuels contractor with the Technical Standards and Safety Authority (TSSA).</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div className="p-4 border border-slate-100 rounded-2xl bg-white">
+               <h5 className="font-bold text-slate-900 text-sm">Gas Fitters (G1/G2)</h5>
+               <p className="text-xs text-slate-500">Every tech on site carries a current TSSA certificate of qualification.</p>
+             </div>
+             <div className="p-4 border border-slate-100 rounded-2xl bg-white">
+               <h5 className="font-bold text-slate-900 text-sm">Liability Insurance</h5>
+               <p className="text-xs text-slate-500">Full $5M commercial liability and WSIB coverage for all GTA projects.</p>
+             </div>
+          </div>
+        </div>
+      )
+    },
+    rebates: {
+      title: 'Ontario Rebate Guide 2026',
+      icon: Sparkles,
+      body: (
+        <div className="space-y-6">
+          <p className="text-slate-600">Upgrade to high-efficiency heat pumps or smart furnaces and save up to <span className="text-emerald-600 font-bold">$7,100</span> through current provincial initiatives.</p>
+          <div className="space-y-3">
+             <div className="p-5 bg-emerald-50 border border-emerald-100 rounded-2xl flex justify-between items-center">
+                <div>
+                   <h5 className="font-bold text-emerald-900 text-sm">Clean Home Heating Initiative</h5>
+                   <p className="text-xs text-emerald-700">Available for North York & Scarborough residents.</p>
+                </div>
+                <div className="text-emerald-600 font-black">$4,500</div>
+             </div>
+             <div className="p-5 bg-blue-50 border border-blue-100 rounded-2xl flex justify-between items-center">
+                <div>
+                   <h5 className="font-bold text-blue-900 text-sm">Federal Greener Homes Successor</h5>
+                   <p className="text-xs text-blue-700">Tax-free grant for cold-climate heat pumps.</p>
+                </div>
+                <div className="text-blue-600 font-black">$2,600</div>
+             </div>
+          </div>
+          <button onClick={onClose} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold">Apply for Rebate Check</button>
+        </div>
+      )
+    },
+    warranty: {
+      title: 'Warranty Registration',
+      icon: CheckCircle2,
+      body: (
+        <div className="space-y-6">
+          <p className="text-slate-600">Register your new installation to ensure long-term coverage. Most manufacturers require registration within 60 days of install.</p>
+          <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+            <h5 className="font-bold text-slate-900">Coverage Tiers</h5>
+            <div className="flex items-center justify-between text-sm py-2 border-b border-slate-200">
+               <span>Compressor / Heat Exchanger</span>
+               <span className="font-bold">20 Years</span>
+            </div>
+            <div className="flex items-center justify-between text-sm py-2 border-b border-slate-200">
+               <span>All Other Internal Parts</span>
+               <span className="font-bold">10 Years</span>
+            </div>
+            <div className="flex items-center justify-between text-sm py-2">
+               <span>Extreme Air Labor Guarantee</span>
+               <span className="font-bold">1-2 Years</span>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    tracking: {
+      title: 'Repair Tracking',
+      icon: MapPin,
+      body: (
+        <div className="space-y-6 text-center py-8">
+          <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+             <Clock className="w-10 h-10 text-blue-600 animate-pulse" />
+          </div>
+          <h4 className="text-xl font-bold text-slate-900">Live Technician View</h4>
+          <p className="text-slate-500 text-sm">Please enter your 6-digit Service Ticket ID sent via SMS to track your Master Technician in real-time.</p>
+          <input type="text" placeholder="e.g. 882100" className="w-full max-w-xs mx-auto px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-center font-black tracking-widest outline-none focus:ring-4 focus:ring-blue-500/10" />
+        </div>
+      )
+    },
+    financing: {
+      title: 'Financing Options',
+      icon: Zap,
+      body: (
+        <div className="space-y-6">
+          <p className="text-slate-600">Don't let a breakdown break the bank. We offer flexible 0% interest terms for qualified GTA residents.</p>
+          <div className="grid grid-cols-1 gap-4">
+             <div className="p-6 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                <h5 className="font-bold text-slate-900 mb-1">Comfort Now, Pay Later</h5>
+                <p className="text-sm text-slate-500 mb-4">6 Months 0% Interest. Low monthly payments starting at $49/mo.</p>
+                <div className="text-[10px] font-black uppercase text-blue-600">OAC - Powered by Financeit</div>
+             </div>
+             <div className="p-6 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                <h5 className="font-bold text-slate-900 mb-1">Energy Star Upgrade Loan</h5>
+                <p className="text-sm text-slate-500 mb-4">120-Month amortization with zero prepayment penalties.</p>
+             </div>
+          </div>
+        </div>
+      )
+    },
+    'emergency-protocol': {
+      title: 'Emergency Protocol',
+      icon: ShieldAlert,
+      body: (
+        <div className="space-y-6">
+          <div className="p-4 bg-red-50 border border-red-100 rounded-2xl text-red-700 text-sm font-bold flex items-center gap-3">
+             <ShieldAlert className="w-5 h-5" /> IMMEDIATE ACTION REQUIRED
+          </div>
+          <div className="space-y-4">
+            <div className="p-5 border border-slate-100 rounded-2xl">
+               <h5 className="font-bold text-slate-900 mb-2">If you smell gas (Rotten Eggs):</h5>
+               <ol className="list-decimal pl-5 text-sm text-slate-600 space-y-2">
+                 <li>Evacuate all persons and pets immediately.</li>
+                 <li>Do not touch any electrical switches or use phones inside.</li>
+                 <li>Call Enbridge Gas at 1-866-763-5427 from a safe distance.</li>
+               </ol>
+            </div>
+            <div className="p-5 border border-slate-100 rounded-2xl">
+               <h5 className="font-bold text-slate-900 mb-2">No-Heat / No-Cool Emergency:</h5>
+               <p className="text-sm text-slate-600">Call (416) 728-2224. Our night shift dispatchers will prioritize senior residents and households with infants.</p>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    portal: {
+      title: 'Member Portal',
+      icon: User,
+      body: (
+        <div className="space-y-6 text-center py-12">
+          <div className="w-16 h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center mx-auto mb-6">
+             <GanttChart className="w-8 h-8" />
+          </div>
+          <h4 className="text-2xl font-black text-slate-900">Client Hub Beta</h4>
+          <p className="text-slate-500 text-sm mb-8">Service history, digital invoices, and filter replacement reminders coming Summer 2026.</p>
+          <div className="flex flex-col gap-3">
+            <button disabled className="w-full py-4 bg-slate-200 text-slate-400 rounded-2xl font-bold cursor-not-allowed">Sign In with OTP</button>
+            <button onClick={onClose} className="text-blue-600 font-bold text-sm">Return Home</button>
+          </div>
+        </div>
+      )
+    }
+  };
+
+  const activeContent = contentMap[page as string] || { title: 'Information', icon: Info, body: 'Content coming soon.' };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/40 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in slide-in-from-bottom-8 duration-500 relative max-h-[90vh] flex flex-col">
+        {/* Header */}
+        <div className="p-10 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+              <activeContent.icon className="w-6 h-6" />
+            </div>
+            <h3 className="text-2xl font-black tracking-tight text-slate-900">{activeContent.title}</h3>
+          </div>
+          <button onClick={onClose} className="p-3 hover:bg-slate-50 rounded-full transition-colors active:scale-90">
+            <X className="w-6 h-6 text-slate-400" />
+          </button>
+        </div>
+        
+        {/* Body */}
+        <div className="p-10 overflow-y-auto custom-scrollbar">
+          {activeContent.body}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedProperty, setSelectedProperty] = useState('Residential');
   const [dispatchStatus, setDispatchStatus] = useState<'live' | 'idle'>('live');
+  const [activePage, setActivePage] = useState<PageID>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -252,6 +486,9 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen selection:bg-blue-600 selection:text-white bg-white">
       <Navbar />
+      
+      {/* Dynamic Overlay for Links */}
+      <PageOverlay page={activePage} onClose={() => setActivePage(null)} />
 
       {/* Hero Section */}
       <section id="hero" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
@@ -482,18 +719,21 @@ const App: React.FC = () => {
               <h4 className="text-sm font-black uppercase tracking-[0.2em] text-white">Client Support</h4>
               <ul className="space-y-4">
                 {[
-                  { label: 'Ontario Rebate Guide', icon: Sparkles },
-                  { label: 'Warranty Registration', icon: CheckCircle2 },
-                  { label: 'Repair Tracking', icon: MapPin },
-                  { label: 'Financing Options', icon: Zap },
-                  { label: 'Emergency Protocol', icon: ShieldAlert },
-                  { label: 'Member Portal', icon: User }
+                  { id: 'rebates', label: 'Ontario Rebate Guide', icon: Sparkles },
+                  { id: 'warranty', label: 'Warranty Registration', icon: CheckCircle2 },
+                  { id: 'tracking', label: 'Repair Tracking', icon: MapPin },
+                  { id: 'financing', label: 'Financing Options', icon: Zap },
+                  { id: 'emergency-protocol', label: 'Emergency Protocol', icon: ShieldAlert },
+                  { id: 'portal', label: 'Member Portal', icon: User }
                 ].map((link) => (
                   <li key={link.label}>
-                    <a href="#contact" onClick={(e) => handleGlobalLinkClick(e, '#contact')} className="text-sm font-semibold hover:text-blue-500 transition-colors flex items-center gap-2 group">
+                    <button 
+                      onClick={() => setActivePage(link.id as PageID)} 
+                      className="text-sm font-semibold hover:text-blue-500 transition-colors flex items-center gap-2 group text-left"
+                    >
                       <link.icon className="w-4 h-4 text-slate-600 group-hover:text-blue-500 transition-colors" />
                       {link.label}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -526,18 +766,18 @@ const App: React.FC = () => {
           {/* Bottom Bar: Legal & Compliance */}
           <div className="pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-4">
-              <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
+              <button onClick={() => setActivePage('privacy')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
                 <Scale className="w-3 h-3" /> Privacy & Data Policy
-              </a>
-              <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
+              </button>
+              <button onClick={() => setActivePage('terms')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
                 <FileText className="w-3 h-3" /> Terms of Service
-              </a>
-              <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
+              </button>
+              <button onClick={() => setActivePage('tssa')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2">
                 <ShieldHalf className="w-3 h-3" /> TSSA Compliance
-              </a>
-              <a href="#" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">
+              </button>
+              <button onClick={() => setActivePage('accessibility')} className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">
                 Accessibility Statement
-              </a>
+              </button>
             </div>
             
             <div className="flex items-center gap-6">
